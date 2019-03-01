@@ -8,7 +8,11 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    console.log('socket connected');
+	console.log(socket.id);
+
+	socket.on('clicked', (data) =>{
+		console.log(data);
+	})
 })
 
 http.listen(PORT, () => {
