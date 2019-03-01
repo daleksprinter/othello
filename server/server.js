@@ -10,8 +10,9 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
 	console.log(socket.id);
 
-	socket.on('clicked', (data) =>{
+	socket.on('send', (data) =>{
 		console.log(data);
+		io.emit('recieve', data);
 	})
 })
 
