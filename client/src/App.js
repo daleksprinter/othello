@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 import io from 'socket.io-client'
-import TextField from '@material-ui/core/TextField';
-
 
 
 class App extends Component {
@@ -10,28 +8,50 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      'text' : '',
-      'messages' : []
+      'newroom' : '',
+      'existroom' : '',
+      'roomname' : '',
     }
     this.socket = io('127.0.0.1:8000');
 
-    
-    this.click = ev => {
-      ev.preventDefault();
 
-      this.socket.emit('send', this.state.text);
-      this.setState({text : ""});
-    
+    //involve to creating room
+    this.create = () => {
+      this.socket.emit('create_room', this.state.newroom);
     }
 
-    const addmessage = (data) => {
-      this.setState({messages : [...this.state.messages, data]});
-    }
-
-    this.socket.on('recieve', (data) => {
-      console.log('got data');
-      addmessage(data);
+    this.socket.on('success_create',(data) => {
+      this.setState({roomname : data});
     })
+
+    this.socket.on('failed_create', (data) =>{
+      console.log('failed_create');
+    })
+
+
+    //involve to entering room 
+    this.enter = () => {
+      this.socket.emit('enter_room', this.state.existroom);
+    }
+
+    this.socket.on('success_enter', (data) => {
+      this.setState({roomname : data});
+    })
+
+    this.socket.on('failed_enter', (data) => {
+      console.log('failed_enter');
+    })
+
+    //involve to exiting room
+    this.exitroom = () => {
+      this.socket.emit('exitroom', this.state.roomname);
+    }
+
+    this.socket.on('exit', (data) => {
+      this.setState({roomname : ''});
+    })
+
+
   }
 
 
@@ -39,14 +59,21 @@ class App extends Component {
     return (
       <div>
         <div>
-          {this.state.messages.map(message => {
-            return(
-              <div>{message}</div>
-            )
-          })}
+          <div id = 'create_new_room'>
+            <div>Create New Room</div>
+            <input type = 'text' placeholder = 'Room Name' value = {this.state.newroom} onChange = {(event) => this.setState({newroom : event.target.value})}></input>
+            <button type = 'button' onClick = {() => this.create()}>Create Room</button>
+          </div>
+
+          <div id = 'enter_room'>
+            <div>Enter Room</div>
+            <input type = 'text' placeholder = "Room Name" value = {this.state.existroom} onChange = {(event) => this.setState({existroom : event.target.value})}></input>
+            <button type = 'button' onClick = {() => this.enter()}>Enter Room</button>
+          </div>
+
+          <div>You are entering room {this.state.roomname}</div>
+          <button type = 'button' onClick = {() => this.exitroom()}>Exit Room</button>
         </div>
-        <input type = "text" value = {this.state.text} onChange = {(event) => {this.setState({text : event.target.value})}}></input>
-        <button onClick = {(ev) => this.click(ev)}>send message</button>
       </div>
     );
   }
