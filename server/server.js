@@ -1,0 +1,17 @@
+const app = require('express')();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const PORT = process.env.PORT || 8000;
+
+app.get('/', (req, res) => {
+	res.send('<div>hello</div>');
+});
+
+io.on('connection', (socket) => {
+    console.log('socket connected');
+})
+
+http.listen(PORT, () => {
+	console.log('listening');
+});
+
