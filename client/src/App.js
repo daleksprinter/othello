@@ -13,7 +13,7 @@ class App extends Component {
       'roomname' : '',
     }
     this.socket = io('127.0.0.1:8000');
-
+    console.log(this.socket.id);
 
     //involve to creating room
     this.create = () => {
@@ -24,7 +24,7 @@ class App extends Component {
       this.setState({roomname : data});
     })
 
-    this.socket.on('failed_create', (data) =>{
+    this.socket.on('failed_create', () =>{
       console.log('failed_create');
     })
 
@@ -38,7 +38,7 @@ class App extends Component {
       this.setState({roomname : data});
     })
 
-    this.socket.on('failed_enter', (data) => {
+    this.socket.on('failed_enter', () => {
       console.log('failed_enter');
     })
 
