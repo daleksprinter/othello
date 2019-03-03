@@ -8,8 +8,8 @@ export default class Row extends Component{
     render(){
         return(
                 <div className = 'row'>
-                    {(this.props.stones).map((stone) => (
-                        <Stone stone = {stone} />
+                    {(this.props.data).map((data) => (
+                        <Stone id = {data.id} state = {data.state} />
                     ))}
                 </div>
         )
