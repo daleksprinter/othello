@@ -164,10 +164,14 @@ export default class Board extends Component{
         })
     }
 
+    put(pos){
+        
+    }
+
     
 
     render(){
-        var mob = (this.state.turn == 0 ? this.mobility(this.state.black0, this.state.black1, this.state.white0, this.state.white1) : this.mobility(this.state.white0, this.state.white1, this.state.black0, this.state.black1));
+        var mob = this.mobility();
 
         var board = [];
         for(var i = 0; i < 32; i++){
@@ -193,14 +197,14 @@ export default class Board extends Component{
         return(
             <div>
                 <div>
-                    <Row data = {board.slice(0, 8)} />
-                    <Row data = {board.slice(8, 16)} />
-                    <Row data = {board.slice(16, 24)} />
-                    <Row data = {board.slice(24, 32)} />
-                    <Row data = {board.slice(32, 40)} />
-                    <Row data = {board.slice(40, 48)} />
-                    <Row data = {board.slice(48, 56)} />
-                    <Row data = {board.slice(56)} />
+                    <Row data = {board.slice(0, 8)} func = {this.put} />
+                    <Row data = {board.slice(8, 16)} func = {this.put} />
+                    <Row data = {board.slice(16, 24)} func = {this.put}/>
+                    <Row data = {board.slice(24, 32)} func = {this.put}/>
+                    <Row data = {board.slice(32, 40)} func = {this.put}/>
+                    <Row data = {board.slice(40, 48)} func = {this.put}/>
+                    <Row data = {board.slice(48, 56)} func = {this.put}/>
+                    <Row data = {board.slice(56)} func = {this.put}/>
                 </div>
 
             </div>

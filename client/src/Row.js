@@ -7,9 +7,9 @@ export default class Row extends Component{
     
     render(){
         return(
-                <div className = 'row'>
+                <div className = 'row' >
                     {(this.props.data).map((data) => (
-                        <Stone id = {data.id} state = {data.state} />
+                        <Stone id = {data.id} state = {data.state} func = {this.props.func}/>
                     ))}
                 </div>
         )
