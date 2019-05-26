@@ -4,6 +4,22 @@ export default class Board extends Component{
 
     constructor(props){
         super(props);
+
+        
+
+        this.popcount64 = (x1, x0) => {
+            let t0 = x1 - (x1 >>> 1 & 0x55555555);
+            t0 = (t0 & 0x33333333) + ((t0 & 0xcccccccc) >>> 2);
+            let t1 = x0 - (x0 >>> 1 & 0x55555555);
+            t0 += (t1 & 0x33333333) + ((t1 & 0xcccccccc) >>> 2);
+            t0 = (t0 & 0x0f0f0f0f) + ((t0 & 0xf0f0f0f0) >>> 4);
+            return t0 * 0x01010101 >>> 24;
+        }
+
+        this.put = (pos) => {
+            console.log(pos);
+        }
+
         this.state = {
             player_turn : 0,
             turn : 0,
@@ -11,23 +27,17 @@ export default class Board extends Component{
             white1 : (1 << 36 - 32),
             black0 : (1 << 28),
             black1 : (1 << 35 - 32),
+            mob0 : this.mobility().first,
+            mob1 : this.mobility().second,
             whitecount : 2,
             blackcount : 2,
         }
+
     }
 
-    popcount64(x1, x0) {
-        let t0 = x1 - (x1 >>> 1 & 0x55555555);
-        t0 = (t0 & 0x33333333) + ((t0 & 0xcccccccc) >>> 2);
-        let t1 = x0 - (x0 >>> 1 & 0x55555555);
-        t0 += (t1 & 0x33333333) + ((t1 & 0xcccccccc) >>> 2);
-        t0 = (t0 & 0x0f0f0f0f) + ((t0 & 0xf0f0f0f0) >>> 4);
-        return t0 * 0x01010101 >>> 24;
-    }
-
-    mobility(){
+    mobility = (turn) => {
         var p0, p1, o0, o1;
-        if(this.state.turn == 0){
+        if(turn == 0){
             p0 = this.state.black0;
             p1 = this.state.black1;
             o0 = this.state.white0;
@@ -163,22 +173,19 @@ export default class Board extends Component{
             second : mob1,
         })
     }
-
-    put(pos){
-        
-    }
-
     
 
     render(){
-        var mob = this.mobility();
-
+        this.setState({
+            mob0 : this.mobility(this.state.turn).first,
+            mob1 : this.mobility(this.state.turn).second,
+        })
         var board = [];
         for(var i = 0; i < 32; i++){
             var state;
             if(this.state.white0 & (1 << i)) state = 'white';
             else if(this.state.black0 & (1 << i)) state = 'black';
-            else if(mob.first & (1 << i)) state = 'mobility';
+            else if(this.state.mob0 & (1 << i)) state = 'mobility';
             else state = 'empty';
             board.push({'state' : state, 'id' : i});
         }
@@ -187,7 +194,7 @@ export default class Board extends Component{
             var state;
             if(this.state.white1 & (1 << i)) state = 'white';
             else if(this.state.black1 & (1 << i)) state = 'black';
-            else if(mob.second & (1 << i)) state = 'mobility';
+            else if(this.state.mob1 & (1 << i)) state = 'mobility';
             else state = 'empty';
             board.push({'state' : state, 'id' : 32 + i});
         }
